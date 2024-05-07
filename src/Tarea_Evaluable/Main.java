@@ -6,29 +6,29 @@ public class Main {
     public static boolean repetir = false;
     public static Scanner sc = new Scanner(System.in);
 
-    public static void crearFigura(String[] parts) {
-        String figura = parts[0];
+    public static void crearFigura(String[] separador) {
+        String figura = separador[0];
         switch (figura) {
             case "Circulo":
-                String nombreCirculo = parts[0];
-                int radio = Integer.parseInt(parts[1]);
+                String nombreCirculo = separador[0];
+                int radio = Integer.parseInt(separador[1]);
                 Figuras.add(new Circulo(nombreCirculo, radio));
                 break;
             case "Cuadrado":
-                String nombreCuadrado = parts[0];
-                int lado = Integer.parseInt(parts[1]);
+                String nombreCuadrado = separador[0];
+                int lado = Integer.parseInt(separador[1]);
                 Figuras.add(new Cuadrado(nombreCuadrado, lado));
                 break;
             case "Rectangulo":
-                String nombreRecatangulo = parts[0];
-                int base = Integer.parseInt(parts[1]);
-                int altura = Integer.parseInt(parts[2]);
+                String nombreRecatangulo = separador[0];
+                int base = Integer.parseInt(separador[1]);
+                int altura = Integer.parseInt(separador[2]);
                 Figuras.add(new Rectangulo(nombreRecatangulo, base, altura));
                 break;
             default:
                 System.out.println("Error en la creacion de las figuras");
         }//fin switch
-    }
+    }//Fin del metodo crearFigura
 
     public static int menu() {
         int opcion = 0;
@@ -56,7 +56,7 @@ public class Main {
             }
         }while(repetir);
         return opcion;
-    }
+    }//Fin del metodo menu
 
     public static void ejecucion(){
         lecturaArchivo();
@@ -79,11 +79,9 @@ public class Main {
                 case 5:
                     System.out.println("Saliendo del programa...");
                     break;
-                default:
-                    System.out.println("Opción no válida");
             }
         } while (opcion != 5);
-    }
+    }//Fin del metodo ejecucion
 
     private static void lecturaArchivo() {
         String fileName = ".\\src\\Tarea_Evaluable\\CSV Entornos.csv";
@@ -91,15 +89,15 @@ public class Main {
             String line;
             line = br.readLine();
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split(";");
-                if (parts.length > 0) {
-                    crearFigura(parts);
+                String[] separador = line.split(";");
+                if (separador.length > 0) {
+                    crearFigura(separador);
                 }
             }
         } catch (IOException e) {
             System.err.println("Error en la lectura del archivo: " + e.getMessage());
         }
-    }
+    }//Fin del metodo lecturaArchivo
 
     public static void area() {
         if (!Figuras.isEmpty()) {
@@ -121,9 +119,9 @@ public class Main {
                 }
             }
         } else {
-            System.out.println("LISTA VACIA");
+            System.out.println("La lista de figuras está vacía");
         }
-    }
+    }//Fin del metodo area
 
     public static void perimetro() {
         if (!Figuras.isEmpty()) {
@@ -145,9 +143,9 @@ public class Main {
                 }
             }
         } else {
-            System.out.println("LISTA VACÍA");
+            System.out.println("La lista de figuras está vacía");
         }
-    }
+    }//Fin del metodo perimetro
 
     public static void duplica() {
         if (!Figuras.isEmpty()) {
@@ -157,25 +155,35 @@ public class Main {
                         Circulo circulo = (Circulo) figura;
                         circulo.duplica();
                         System.out.println("El " + circulo.getNombre() + " tiene un valor del radio de " + circulo.getRadio());
+                        if (circulo.getRadio() >= 1000){
+                            throw new IllegalAccessException();
+                        }
                     } else if (figura instanceof Cuadrado) {
                         Cuadrado cuadrado = (Cuadrado) figura;
                         cuadrado.duplica();
                         System.out.println("El " + cuadrado.getNombre() + " tiene un valor del lado de " + cuadrado.getLado());
+                        if (cuadrado.getLado() >= 1000){
+                            throw new IllegalAccessException();
+                        }
                     } else if (figura instanceof Rectangulo) {
                         Rectangulo rectangulo = (Rectangulo) figura;
                         rectangulo.duplica();
                         System.out.println("El " + rectangulo.getNombre() + " tiene valor de la base de " + rectangulo.getBase() + " tiene valor de la altura de " + rectangulo.getAltura());
+                        if (rectangulo.getBase() >= 1000){
+                            throw new IllegalAccessException();
+                        }
                     } else {
                         System.out.println("No existe esta figura");
                     }
-                }catch (IllegalArgumentException e){
-                    System.out.println(e.getMessage());
+                }catch (IllegalAccessException e) {
+                    System.err.println("Una de las figuras tiene un valor superior o igual a 1000");
+                    dividir2();
                 }//Fin try-catch
             }//Fin for
         } else {
-            System.out.println("La lista de figuras está vacía.");
+            System.out.println("La lista de figuras está vacía");
         }//Fin de if-else
-    }//Fin de doble
+    }//Fin del metodo duplica
 
     public static void dividir2() {
         if (!Figuras.isEmpty()) {
@@ -185,29 +193,37 @@ public class Main {
                         Circulo circulo = (Circulo) figura;
                         circulo.divide2();
                         System.out.println("El " + circulo.getNombre() + " tiene un valor del radio de " + circulo.getRadio());
+                        if (circulo.getRadio() <= 0){
+                            throw new IllegalAccessException();
+                        }
                     } else if (figura instanceof Cuadrado) {
                         Cuadrado cuadrado = (Cuadrado) figura;
                         cuadrado.divide2();
                         System.out.println("El " + cuadrado.getNombre() + " tiene un valor del lado de " + cuadrado.getLado());
+                        if (cuadrado.getLado() <= 0){
+                            throw new IllegalAccessException();
+                        }
                     } else if (figura instanceof Rectangulo) {
                         Rectangulo rectangulo = (Rectangulo) figura;
                         rectangulo.divide2();
-                        System.out.println("El " + rectangulo.getNombre() + " tiene valor de la base de " + rectangulo.getBase() + " tiene valor de la altura de " + rectangulo.getAltura() );
+                        System.out.println("El " + rectangulo.getNombre() + " tiene valor de la base de " + rectangulo.getBase() + " tiene valor de la altura de " + rectangulo.getAltura());
+                        if (rectangulo.getBase() <= 0){
+                            throw new IllegalAccessException();
+                        }
                     } else {
                         System.out.println("No existe esta figura");
                     }
-                }catch (IllegalArgumentException e){
-                    System.out.println(e.getMessage());
+                }catch (IllegalAccessException e) {
+                    System.err.println("Una de las figuras tiene un valor inferior o igual a 0");
                 }//Fin try-catch
             }//Fin for
         } else {
-            System.out.println("La lista de figuras está vacía.");
+            System.out.println("La lista de figuras está vacía");
+            duplica();
         }//Fin de if-else
     }//Fin  del metodo dividir2
 
     public static void main(String[] args) {
         ejecucion();
     }
-
 }
-
