@@ -3,7 +3,8 @@ import java.util.*;
 import java.io.*;
 public class Main {
     static ArrayList<Figura> Figuras = new ArrayList<>();
-    Scanner sc = new Scanner(System.in);
+    public static boolean repetir = false;
+    public static Scanner sc = new Scanner(System.in);
 
     public static void crearFigura(String[] parts) {
         String figura = parts[0];
@@ -29,34 +30,39 @@ public class Main {
         }//fin switch
     }
 
-    public static void menu() {
-        String fileName = ".\\src\\Tarea_Evaluable\\CSV Entornos.csv";
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            line = br.readLine();
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(";");
-                if (parts.length > 0) {
-                    crearFigura(parts);
+    public static int menu() {
+        int opcion = 0;
+        do{
+            repetir = false;
+            try{
+                System.out.println();
+                System.out.println("Seleccione una de las siguientes opciones");
+                System.out.println("Seleccione 1 para calacular el area de las figuras");
+                System.out.println("Seleccione 2 para calcular el perímetro de las figuras");
+                System.out.println("Seleccione 3 para duplicar el tamaño de las figuras");
+                System.out.println("Seleccione 4 para dividir el tamaño de las figuras entre dos");
+                System.out.println("Seleccione 5 para salir del programa");
+                opcion = sc.nextInt();
+                if(opcion < 1 || opcion > 5){
+                    throw new IllegalAccessException();
                 }
+            }catch (InputMismatchException e1){
+                System.err.println("Valor no valido, error de formato");
+                sc.nextLine();
+                repetir = true;
+            }catch (IllegalAccessException e2){
+                System.err.println("Las opciones son de 1 a 5");
+                repetir = true;
             }
-        } catch (IOException e) {
-            System.err.println("Error en la lectura del archivo: " + e.getMessage());
-        }
+        }while(repetir);
+        return opcion;
+    }
 
-        Scanner sc = new Scanner(System.in);
+    public static void ejecucion(){
+        lecturaArchivo();
         int opcion;
         do {
-            System.out.println();
-            System.out.println("Seleccione una de las siguientes opciones");
-            System.out.println("Seleccione 1 para calacular el area de las figuras");
-            System.out.println("Seleccione 2 para calcular el perímetro de las figuras");
-            System.out.println("Seleccione 3 para duplicar el tamaño de las figuras");
-            System.out.println("Seleccione 4 para dividir el tamaño de las figuras entre dos");
-            System.out.println("Seleccione 5 para salir del programa");
-            opcion = sc.nextInt();
-            sc.nextLine();
-
+            opcion = menu();
             switch (opcion) {
                 case 1:
                     area();
@@ -78,7 +84,23 @@ public class Main {
             }
         } while (opcion != 5);
     }
-    
+
+    private static void lecturaArchivo() {
+        String fileName = ".\\src\\Tarea_Evaluable\\CSV Entornos.csv";
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            line = br.readLine();
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(";");
+                if (parts.length > 0) {
+                    crearFigura(parts);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error en la lectura del archivo: " + e.getMessage());
+        }
+    }
+
     public static void area() {
         if (!Figuras.isEmpty()) {
             for (Figura figura : Figuras) {
@@ -127,56 +149,64 @@ public class Main {
         }
     }
 
-    public static void duplica(){
+    public static void duplica() {
         if (!Figuras.isEmpty()) {
             for (Figura figura : Figuras) {
-                if (figura instanceof Circulo) {
-                    Circulo circulo = (Circulo) figura;
-                    int perimetroCirculo = circulo.perimetro();
-                    System.out.println("El perímetro del círculo es: " + perimetroCirculo);
-                } else if (figura instanceof Cuadrado) {
-                    Cuadrado cuadrado = (Cuadrado) figura;
-                    int perimetroCuadrado = cuadrado.perimetro();
-                    System.out.println("El perímetro del cuadrado es: " + perimetroCuadrado);
-                } else if (figura instanceof Rectangulo) {
-                    Rectangulo rectangulo = (Rectangulo) figura;
-                    int perimetroRectangulo = rectangulo.perimetro();
-                    System.out.println("El perímetro del rectángulo es: " + perimetroRectangulo);
-                } else {
-                    System.out.println("No existe la figura indicada");
-                }
-            }
+                try {
+                    if (figura instanceof Circulo) {
+                        Circulo circulo = (Circulo) figura;
+                        circulo.duplica();
+                        System.out.println("El " + circulo.getNombre() + " tiene un valor del radio de " + circulo.getRadio());
+                    } else if (figura instanceof Cuadrado) {
+                        Cuadrado cuadrado = (Cuadrado) figura;
+                        cuadrado.duplica();
+                        System.out.println("El " + cuadrado.getNombre() + " tiene un valor del lado de " + cuadrado.getLado());
+                    } else if (figura instanceof Rectangulo) {
+                        Rectangulo rectangulo = (Rectangulo) figura;
+                        rectangulo.duplica();
+                        System.out.println("El " + rectangulo.getNombre() + " tiene valor de la base de " + rectangulo.getBase() + " tiene valor de la altura de " + rectangulo.getAltura());
+                    } else {
+                        System.out.println("No existe esta figura");
+                    }
+                }catch (IllegalArgumentException e){
+                    System.out.println(e.getMessage());
+                }//Fin try-catch
+            }//Fin for
         } else {
-            System.out.println("LISTA VACÍA");
-        }
-    }
+            System.out.println("La lista de figuras está vacía.");
+        }//Fin de if-else
+    }//Fin de doble
 
     public static void dividir2() {
         if (!Figuras.isEmpty()) {
             for (Figura figura : Figuras) {
-                if (figura instanceof Circulo) {
-                    Circulo circulo = (Circulo) figura;
-                    int perimetroCirculo = circulo.perimetro();
-                    System.out.println("El perímetro del círculo es: " + perimetroCirculo);
-                } else if (figura instanceof Cuadrado) {
-                    Cuadrado cuadrado = (Cuadrado) figura;
-                    int perimetroCuadrado = cuadrado.perimetro();
-                    System.out.println("El perímetro del cuadrado es: " + perimetroCuadrado);
-                } else if (figura instanceof Rectangulo) {
-                    Rectangulo rectangulo = (Rectangulo) figura;
-                    int perimetroRectangulo = rectangulo.perimetro();
-                    System.out.println("El perímetro del rectángulo es: " + perimetroRectangulo);
-                } else {
-                    System.out.println("No existe la figura indicada");
-                }
-            }
+                try {
+                    if (figura instanceof Circulo) {
+                        Circulo circulo = (Circulo) figura;
+                        circulo.divide2();
+                        System.out.println("El " + circulo.getNombre() + " tiene un valor del radio de " + circulo.getRadio());
+                    } else if (figura instanceof Cuadrado) {
+                        Cuadrado cuadrado = (Cuadrado) figura;
+                        cuadrado.divide2();
+                        System.out.println("El " + cuadrado.getNombre() + " tiene un valor del lado de " + cuadrado.getLado());
+                    } else if (figura instanceof Rectangulo) {
+                        Rectangulo rectangulo = (Rectangulo) figura;
+                        rectangulo.divide2();
+                        System.out.println("El " + rectangulo.getNombre() + " tiene valor de la base de " + rectangulo.getBase() + " tiene valor de la altura de " + rectangulo.getAltura() );
+                    } else {
+                        System.out.println("No existe esta figura");
+                    }
+                }catch (IllegalArgumentException e){
+                    System.out.println(e.getMessage());
+                }//Fin try-catch
+            }//Fin for
         } else {
-            System.out.println("LISTA VACÍA");
-        }
-    }
+            System.out.println("La lista de figuras está vacía.");
+        }//Fin de if-else
+    }//Fin  del metodo dividir2
 
     public static void main(String[] args) {
-        menu();
+        ejecucion();
     }
 
 }
